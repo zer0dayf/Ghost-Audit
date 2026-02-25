@@ -41,11 +41,31 @@ Designed for deep system analysis. It creates a structured log hierarchy and dig
 
 ---
 
+## 🛠️ Payload Generator CLI
+
+Instead of manual edits, you can dynamically compile heavily customizable payloads directly from your terminal using the built-in generator:
+
+```bash
+chmod +x generate_payload.sh
+
+# Generate a stealth payload with custom delay
+./generate_payload.sh --mode stealth --delay 100 --output Payloads/Generated/my_stealth.txt
+
+# Generate a detailed payload with a custom log export drive/folder
+./generate_payload.sh --mode detailed --delay 250 --drive "D:\MyHiddenLogs"
+```
+
+*Generated payloads will be safely stored in the `Payloads/Generated/` folder without affecting git history.*
+
+---
+
 ## 📂 Repository Structure
 
 ```text
 Ghost-Audit/
+├── generate_payload.sh         # Dynamic Shell Generator CLI
 ├── Payloads/
+│   ├── Generated/              # Dynamically compiled `.txt` output folder
 │   ├── FlipperZero/            # .txt payloads for Flipper Zero / Rubber Ducky
 │   │   ├── Stealth_Mode_PAYLOAD.txt
 │   │   └── Detailed_Mode_PAYLOAD.txt
