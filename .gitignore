@@ -1,0 +1,2 @@
+Payloads/Generated/*.txt
+!Payloads/Generated/.gitkeep
